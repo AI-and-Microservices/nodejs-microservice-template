@@ -26,6 +26,12 @@ function paramsMiddleware(req, res, next) {
       }
     };
   
+    req.getAllParams = () => ({
+        ...req.query,
+        ...req.body,
+        ...req.params
+    });
+    
     next();
   }
   

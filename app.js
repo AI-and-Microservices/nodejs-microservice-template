@@ -10,6 +10,9 @@ const authMiddleware = require('./middlewares/authMiddleware');
 const crossServiceMiddleware = require('./middlewares/crossServiceMiddleware');
 const authRoutes = require('./routes/authRoutes');
 const crossServiceRoutes = require('./routes/crossServiceRoutes');
+const errorHandler = require('./middlewares/errorHandler');
+const adminRoutes = require('./routes/adminRoutes');
+const authorizeMiddleware = require('./middlewares/authorizeMiddleware');
 
 const filePath = `./keys/${process.env.CROSS_SERVICE_KEY_VERSION}_private.pem`;
 if (!fs.existsSync(filePath)) {
@@ -33,5 +36,8 @@ app.use(responseMiddleware);
 const apiPrefix = `/${process.env.SERVICE_NAME}`;
 app.use(apiPrefix, authMiddleware, authRoutes);
 app.use('/internal', crossServiceMiddleware, crossServiceRoutes);
+app.use('/admin', authorizeMiddleware(['admin']), adminRoutes);
 
+// error handling
+app.use(errorHandler);
 module.exports = app;
